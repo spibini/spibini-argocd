@@ -4,8 +4,6 @@ kind: Kustomization
 resources:
   - ../../base
 
-nameSuffix: -dev
-
 configMapGenerator:
   - name: nginx-config
     behavior: replace
@@ -19,7 +17,7 @@ patches:
     patch: |-
       - op: replace
         path: /spec/template/spec/volumes/1/hostPath/path
-        value: /home/deploy/images/dev
+        value: /home/deploy/images/prod
 
   - target:
       kind: Service
@@ -27,4 +25,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/ports/0/nodePort
-        value: 30080
+        value: 30081
