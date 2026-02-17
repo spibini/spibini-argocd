@@ -3,3 +3,8 @@ kind: Kustomization
 resources:
   - deployment.yml
   - service.yml
+
+configMapGenerator:
+  - name: nginx-config
+    literals:
+      - ignore=me
