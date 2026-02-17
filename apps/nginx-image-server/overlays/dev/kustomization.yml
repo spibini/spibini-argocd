@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+
+namespace: linkat-dev
+
+configMapGenerator:
+  - name: nginx-config
+    files:
+      - default.conf
+
+patches:
+  - target:
+      kind: Deployment
+      name: nginx-image-server
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/volumes/1/hostPath/path
+        value: /home/deploy/images/dev
