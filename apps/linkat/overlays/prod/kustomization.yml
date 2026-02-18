@@ -15,7 +15,7 @@ configMapGenerator:
 patches:
   - target:
       kind: Deployment
-      name: nginx-deployment-prod
+      name: nginx-deployment
     patch: |-
       - op: replace
         path: /spec/template/spec/volumes/1/hostPath/path
@@ -23,7 +23,7 @@ patches:
 
   - target:
       kind: Service
-      name: nginx-service-prod
+      name: nginx-service
     patch: |-
       - op: replace
         path: /spec/ports/0/nodePort
