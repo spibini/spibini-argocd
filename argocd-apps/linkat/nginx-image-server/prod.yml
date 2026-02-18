@@ -3,6 +3,9 @@ kind: Application
 metadata:
   name: nginx-image-server-prod
   namespace: argocd
+  labels:
+    ns-group: linkat-prod
+    service: nginx-image-server
 spec:
   project: default
   source:
