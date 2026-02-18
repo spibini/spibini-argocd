@@ -3,6 +3,7 @@ kind: PersistentVolume
 metadata:
   name: nginx-image-pv-prod
 spec:
+  storageClassName: local-path
   capacity:
     storage: 10Gi
   accessModes:
