@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ../../base
+  - pv.yml
 
 nameSuffix: -prod
 
@@ -14,17 +15,18 @@ configMapGenerator:
 
 patches:
   - target:
-      kind: Deployment
-      name: nginx-deployment
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/volumes/1/hostPath/path
-        value: /home/deploy/images/prod
-
-  - target:
       kind: Service
       name: nginx-service
     patch: |-
       - op: replace
         path: /spec/ports/0/nodePort
         value: 30081
+
+patchesJson6902:
+  - target:
+      kind: PersistentVolumeClaim
+      name: nginx-image-pvc
+    patch: |-
+      - op: replace
+        path: /spec/volumeName
+        value: nginx-image-pv-prod

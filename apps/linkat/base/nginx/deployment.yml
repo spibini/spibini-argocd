@@ -29,5 +29,5 @@ spec:
           configMap:
             name: nginx-config
         - name: image-storage
-          hostPath:
-            path: /tmp/placeholder
+          persistentVolumeClaim:
+            claimName: nginx-image-pvc
