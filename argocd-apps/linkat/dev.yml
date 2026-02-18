@@ -1,17 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nginx-image-server-dev
+  name: linkat-dev
   namespace: argocd
   labels:
     ns-group: linkat-dev
-    servicce: nginx-image-server
 spec:
   project: default
   source:
     repoURL: "https://github.com/spibini/spibini-argocd.git"
     targetRevision: HEAD
-    path: apps/nginx-image-server/overlays/dev
+    path: apps/linkat/overlays/dev
   destination:
     server: "https://kubernetes.default.svc"
     namespace: linkat-dev
