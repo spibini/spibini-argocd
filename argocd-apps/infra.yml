@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: "https://github.com/spibini/spibini-argocd.git"
     targetRevision: HEAD
-    path: apps/infra
+    path: apps/duckdns/overlays/dev
     directory:
       recurse: true
   destination:
