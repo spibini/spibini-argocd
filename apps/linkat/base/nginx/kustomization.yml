@@ -7,5 +7,5 @@ resources:
 
 configMapGenerator:
   - name: nginx-config
-    literals:
-      - ignore=me
+    files:
+      - default.conf
