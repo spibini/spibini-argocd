@@ -7,12 +7,6 @@ resources:
 
 nameSuffix: -prod
 
-configMapGenerator:
-  - name: nginx-config
-    behavior: replace
-    files:
-      - default.conf
-
 patches:
   - target:
       kind: Service
@@ -22,6 +16,14 @@ patches:
         path: /spec/ports/0/nodePort
         value: 30081
 
+  - target:
+      kind: Deployment
+      name: nginx-deployment
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/0/value
+        value: "cdn.link-at.store"
+
 patchesJson6902:
   - target:
       kind: PersistentVolumeClaim
@@ -29,4 +31,4 @@ patchesJson6902:
     patch: |-
       - op: replace
         path: /spec/volumeName
-        value: nginx-image-pv-prod
+        value: nginx-image-pv
