@@ -29,4 +29,4 @@ patchesJson6902:
     patch: |-
       - op: replace
         path: /spec/volumeName
-        value: nginx-image-pv-dev
+        value: nginx-image-pv

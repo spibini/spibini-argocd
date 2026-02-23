@@ -3,8 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: nginx-image-pvc
 spec:
-  accessModes:
-    - ReadWriteOnce
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path
   resources:
     requests:
       storage: 10Gi
