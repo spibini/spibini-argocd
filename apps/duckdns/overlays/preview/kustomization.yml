@@ -13,4 +13,12 @@ patches:
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/env/3/value
-        value: "qcov-preview" # PR 테스트용 별도 도메인 권장
+        value: "qcov-preview"
+
+  - target:
+      kind: Deployment
+      name: duckdns
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/4/valueFrom/secretKeyRef/name
+        value: "duckdns-secret-preview"
