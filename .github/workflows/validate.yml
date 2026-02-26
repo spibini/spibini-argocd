@@ -36,3 +36,13 @@ jobs:
             exit 1
           fi
           echo "✅ All overlays are valid!"
+
+      - name: Post Comment to PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: kustomize-validation
+          message: ${{ env.REPORT }}
+
+      - name: Final Check
+        if: steps.validate.outputs.is_failed == '1'
+        run: exit 1
