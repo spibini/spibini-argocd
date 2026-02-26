@@ -1,0 +1,37 @@
+name: GitOps Validate
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  kustomize-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Kustomize
+        run: |
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          sudo mv kustomize /usr/local/bin/
+
+      - name: Auto-validate All Kustomize Overlays
+        run: |
+
+          SUCCESS=true
+
+          find apps -type d -path "*/overlays/*" | while read -r dir; do
+            # 해당 디렉토리에 kustomization 파일이 있는지 확인
+            if [ -f "$dir/kustomization.yml" ] || [ -f "$dir/kustomization.yaml" ]; then
+              echo "🔍 Validating overlay: $dir"
+              if ! kustomize build "$dir" > /dev/null; then
+                echo "❌ Validation failed for: $dir"
+                SUCCESS=false
+              fi
+            fi
+          done
+
+          if [ "$SUCCESS" = false ]; then
+            exit 1
+          fi
+          echo "✅ All overlays are valid!"
