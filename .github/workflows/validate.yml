@@ -1,4 +1,4 @@
-name: GitOps Validate
+name: GitOps Kustomize Validate
 
 on:
   pull_request:
@@ -6,36 +6,40 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  kustomize-test:
+  validate:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Install Kustomize
+      - name: Setup Kustomize
         run: |
           curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
           sudo mv kustomize /usr/local/bin/
 
-      - name: Auto-validate All Kustomize Overlays
+      - name: Validate Overlays and Build Table
+        id: validate
         run: |
+          echo "REPORT<<EOF" >> $GITHUB_ENV
+          echo "### 🔍 Kustomize Build Validation Report" >> $GITHUB_ENV
+          echo "| Application Overlay | Status | Message |" >> $GITHUB_ENV
+          echo "| :--- | :--- | :--- |" >> $GITHUB_ENV
 
-          SUCCESS=true
-
-          find apps -type d -path "*/overlays/*" | while read -r dir; do
-            # 해당 디렉토리에 kustomization 파일이 있는지 확인
-            if [ -f "$dir/kustomization.yml" ] || [ -f "$dir/kustomization.yaml" ]; then
-              echo "🔍 Validating overlay: $dir"
-              if ! kustomize build "$dir" > /dev/null; then
-                echo "❌ Validation failed for: $dir"
-                SUCCESS=false
-              fi
+          FAILED=0
+          while read -r dir; do
+            if kustomize build "$dir" > /dev/null 2>&1; then
+              echo "| \`$dir\` | ✅ PASS | Build Successful |" >> $GITHUB_ENV
+            else
+              ERROR_MSG=$(kustomize build "$dir" 2>&1 | head -n 1 | sed 's/|/ /g')
+              echo "| \`$dir\` | ❌ FAIL | $ERROR_MSG |" >> $GITHUB_ENV
+              FAILED=1
             fi
-          done
+          done < <(find apps -name "kustomization.yml" -o -name "kustomization.yaml" | xargs -I {} dirname {} | sort)
 
-          if [ "$SUCCESS" = false ]; then
-            exit 1
-          fi
-          echo "✅ All overlays are valid!"
+          echo "EOF" >> $GITHUB_ENV
+          echo "is_failed=$FAILED" >> $GITHUB_OUTPUT
 
       - name: Post Comment to PR
         uses: marocchino/sticky-pull-request-comment@v2
