@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+  - configmap.yml
+
+secretGenerator:
+  - name: mysql-secret
+    literals:
+      - MYSQL_ROOT_PASSWORD=preview_pass
+      - MYSQL_USER=preview_user
+      - MYSQL_PASSWORD=preview_pass
+
+generatorOptions:
+  disableNameSuffixHash: true

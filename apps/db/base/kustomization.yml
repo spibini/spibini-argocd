@@ -1,0 +1,7 @@
+resources:
+  - deployment.yml
+  - service.yml
+  - pvc.yml
+
+commonLabels:
+  app: mysql
