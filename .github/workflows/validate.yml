@@ -3,6 +3,7 @@ name: GitOps Validate
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened]
 
 jobs:
   kustomize-test:
