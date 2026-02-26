@@ -9,10 +9,13 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pull-requests: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Kustomize
         run: |
@@ -22,31 +25,39 @@ jobs:
       - name: Validate Overlays and Build Table
         id: validate
         run: |
-          echo "REPORT<<EOF" >> $GITHUB_ENV
-          echo "### 🔍 Kustomize Build Validation Report" >> $GITHUB_ENV
-          echo "| Application Overlay | Status | Message |" >> $GITHUB_ENV
-          echo "| :--- | :--- | :--- |" >> $GITHUB_ENV
+          echo "### 🔍 Kustomize Build Validation Report" > report.md
+          echo "| Application Overlay | Status | Message |" >> report.md
+          echo "| :--- | :--- | :--- |" >> report.md
 
           FAILED=0
           while read -r dir; do
+            echo "Processing $dir..."
             if kustomize build "$dir" > /dev/null 2>&1; then
-              echo "| \`$dir\` | ✅ PASS | Build Successful |" >> $GITHUB_ENV
+              echo "| \`$dir\` | ✅ PASS | Build Successful |" >> report.md
             else
-              ERROR_MSG=$(kustomize build "$dir" 2>&1 | head -n 1 | sed 's/|/ /g')
-              echo "| \`$dir\` | ❌ FAIL | $ERROR_MSG |" >> $GITHUB_ENV
+              ERROR_MSG=$(kustomize build "$dir" 2>&1 | head -n 1 | sed 's/|/ /g' | tr -d '\n')
+              echo "| \`$dir\` | ❌ FAIL | $ERROR_MSG |" >> report.md
               FAILED=1
             fi
           done < <(find apps -name "kustomization.yml" -o -name "kustomization.yaml" | xargs -I {} dirname {} | sort)
 
-          echo "EOF" >> $GITHUB_ENV
           echo "is_failed=$FAILED" >> $GITHUB_OUTPUT
+
+          {
+            echo 'REPORT<<EOF'
+            cat report.md
+            echo 'EOF'
+          } >> $GITHUB_ENV
 
       - name: Post Comment to PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: kustomize-validation
           message: ${{ env.REPORT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Final Check
         if: steps.validate.outputs.is_failed == '1'
-        run: exit 1
+        run: |
+          echo "Validation failed. Check the PR comment for details."
+          exit 1
