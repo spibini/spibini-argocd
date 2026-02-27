@@ -1,22 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: linkat-dev
+  name: infrastructure
   namespace: argocd
-  labels:
-    ns-group: linkat-dev
 spec:
   project: default
   source:
     repoURL: "https://github.com/spibini/spibini-argocd.git"
     targetRevision: HEAD
-    path: apps/linkat/overlays/dev
+    path: apps/networking/duckdns/overlays/default
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: linkat-dev
+    namespace: infra
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true

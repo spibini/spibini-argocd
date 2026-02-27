@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mysql-config
-data:
-  MYSQL_DATABASE: "linkat_dev"
-  TZ: "Asia/Seoul"
