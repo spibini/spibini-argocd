@@ -5,7 +5,8 @@ resources:
   - ../../base
   - pv.yml
 
-nameSuffix: -dev
+namespace: linkat-dev
+namePrefix: linkat-dev-
 
 patches:
   - target:

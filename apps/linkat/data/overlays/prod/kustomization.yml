@@ -7,4 +7,5 @@ resources:
   - configmap.yml
   - sealed-secret.yml
 
-namePrefix: linkat-prod-
+namePrefix: linkat-
+nameSuffix: -prod
