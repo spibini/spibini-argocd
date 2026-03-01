@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: linkat-dev-data
+  name: linkat-prod-data
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: "https://github.com/spibini/spibini-argocd.git"
     targetRevision: HEAD
-    path: apps/linkat/data/overlays/dev
+    path: apps/linkat/data/overlays/prod
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: linkat-dev
+    namespace: linkat-prod
   syncPolicy:
     automated: null
 
@@ -19,7 +19,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: linkat-dev-app
+  name: linkat-prod-app
   namespace: argocd
 spec:
   project: default
