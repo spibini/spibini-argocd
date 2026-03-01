@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: "https://github.com/spibini/spibini-argocd.git"
     targetRevision: HEAD
-    path: apps/networking/duckdns/overlays/default
+    path: apps/network
   destination:
     server: "https://kubernetes.default.svc"
     namespace: infra
