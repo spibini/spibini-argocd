@@ -6,6 +6,3 @@ resources:
   - ../../base
   - configmap.yml
   - sealed-secret.yml
-
-namePrefix: linkat-
-nameSuffix: -prod
