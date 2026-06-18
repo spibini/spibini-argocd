@@ -45,6 +45,8 @@ spec:
               value: {{ .Values.otel.endpoint }}
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: {{ .Values.otel.protocol }}
+            - name: OTEL_TRACES_EXPORTER
+              value: {{ .Values.otel.tracesExporter }}
             - name: OTEL_METRICS_EXPORTER
               value: "otlp"
             - name: OTEL_LOGS_EXPORTER
