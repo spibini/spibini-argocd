@@ -72,6 +72,7 @@ spec:
           endpoint: "http://otel-collector-opentelemetry-collector.monitoring.svc.cluster.local:4318"
           serviceName: "linkat-dev-server"
           protocol: "http/protobuf"
+          tracesExporter: "otlp"
   destination:
     server: "https://kubernetes.default.svc"
     namespace: linkat-dev
