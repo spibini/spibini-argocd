@@ -36,3 +36,40 @@ spec:
     automated:
       prune: true
       selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkat-prod-server
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/spibini/spibini-argocd.git"
+    targetRevision: HEAD
+    path: apps/linkat/server
+    helm:
+      releaseName: linkat-prod-server
+      values: |
+        image:
+          repository: qcov/linkat
+          tag: v0.3.0
+        replicaCount: 1
+        service:
+          type: NodePort
+          port: 8080
+          nodePort: 30091
+        secretName: linkat-prod-env
+        otel:
+          enabled: true
+          endpoint: "http://otel-collector.monitoring.svc.cluster.local:4317"
+          serviceName: "linkat-prod-server"
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: linkat-prod
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
