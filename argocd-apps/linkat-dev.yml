@@ -43,6 +43,8 @@ kind: Application
 metadata:
   name: linkat-dev-server
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
   annotations:
     argocd-image-updater.argoproj.io/image-list: server=qcov/linkat
     argocd-image-updater.argoproj.io/server.update-strategy: latest
