@@ -1,0 +1,6 @@
+apiVersion: v2
+name: linkat-dev-server
+description: Linkat Dev Spring Boot Server
+type: application
+version: 0.1.0
+appVersion: "latest"

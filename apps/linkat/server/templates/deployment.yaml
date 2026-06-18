@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkat-dev-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: linkat-dev-server
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: linkat-dev-server
+  template:
+    metadata:
+      labels:
+        app: linkat-dev-server
+    spec:
+      {{- if .Values.otel.enabled }}
+      initContainers:
+        - name: otel-agent-init
+          image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java:latest
+          command: ["cp", "/javaagent.jar", "/otel/javaagent.jar"]
+          volumeMounts:
+            - name: otel-agent
+              mountPath: /otel
+      {{- end }}
+      containers:
+        - name: linkat-dev-server
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secretName }}
+          env:
+            - name: TZ
+              value: Asia/Seoul
+            {{- if .Values.otel.enabled }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel/javaagent.jar"
+            - name: OTEL_SERVICE_NAME
+              value: {{ .Values.otel.serviceName }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.otel.endpoint }}
+            - name: OTEL_METRICS_EXPORTER
+              value: "otlp"
+            - name: OTEL_LOGS_EXPORTER
+              value: "otlp"
+            {{- end }}
+          {{- if .Values.otel.enabled }}
+          volumeMounts:
+            - name: otel-agent
+              mountPath: /otel
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 10
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+      {{- if .Values.otel.enabled }}
+      volumes:
+        - name: otel-agent
+          emptyDir: {}
+      {{- end }}
