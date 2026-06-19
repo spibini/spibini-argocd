@@ -39,6 +39,12 @@ singleBinary:
       cpu: 500m
       memory: 512Mi
 
+chunksCache:
+  enabled: false
+
+resultsCache:
+  enabled: false
+
 gateway:
   enabled: false
 
