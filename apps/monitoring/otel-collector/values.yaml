@@ -3,6 +3,10 @@ mode: daemonset
 image:
   repository: otel/opentelemetry-collector-contrib
 
+securityContext:
+  runAsUser: 0
+  runAsGroup: 0
+
 presets:
   logsCollection:
     enabled: true
