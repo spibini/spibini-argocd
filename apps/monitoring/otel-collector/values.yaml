@@ -1,9 +1,12 @@
-mode: deployment
-
-replicaCount: 1
+mode: daemonset
 
 image:
   repository: otel/opentelemetry-collector-contrib
+
+presets:
+  logsCollection:
+    enabled: true
+    includeCollectorLogs: false
 
 ports:
   otlp:
@@ -39,6 +42,11 @@ config:
       check_interval: 1s
       limit_mib: 256
       spike_limit_mib: 64
+    resource:
+      attributes:
+        - action: insert
+          key: loki.resource.labels
+          value: service.name, service.version
 
   exporters:
     prometheus:
@@ -69,8 +77,8 @@ config:
         processors: [memory_limiter, batch]
         exporters: [prometheus]
       logs:
-        receivers: [otlp]
-        processors: [memory_limiter, batch]
+        receivers: [otlp, filelog]
+        processors: [memory_limiter, batch, resource]
         exporters: [otlphttp/loki]
       traces:
         receivers: [otlp]
