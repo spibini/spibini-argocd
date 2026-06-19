@@ -38,3 +38,4 @@ resources:
 service:
   type: ClusterIP
   annotations: {}
+  port: 3200 
