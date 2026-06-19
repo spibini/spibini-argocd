@@ -53,6 +53,8 @@ config:
         job: true
         instance: true
         level: true
+      resource_to_telemetry_conversion:
+        enabled: true
     otlp/tempo:
       endpoint: http://tempo.monitoring.svc.cluster.local:4317
       tls:
