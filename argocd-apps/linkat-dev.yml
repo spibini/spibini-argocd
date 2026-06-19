@@ -73,6 +73,7 @@ spec:
           serviceName: "linkat-dev-server"
           protocol: "http/protobuf"
           tracesExporter: "otlp"
+          javaAgentLogging: "application"
   destination:
     server: "https://kubernetes.default.svc"
     namespace: linkat-dev

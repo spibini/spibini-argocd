@@ -17,3 +17,4 @@ otel:
   serviceName: "linkat-dev-server"
   protocol: "http/protobuf"
   tracesExporter: "otlp"
+  javaAgentLogging: "application"
