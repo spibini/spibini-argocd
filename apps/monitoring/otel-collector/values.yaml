@@ -39,6 +39,11 @@ config:
       check_interval: 1s
       limit_mib: 256
       spike_limit_mib: 64
+    resource:
+      attributes:
+        - action: insert
+          key: loki.resource.labels
+          value: service.name, service.version
 
   exporters:
     prometheus:
@@ -53,8 +58,6 @@ config:
         job: true
         instance: true
         level: true
-      resource_to_telemetry_conversion:
-        enabled: true
     otlp/tempo:
       endpoint: http://tempo.monitoring.svc.cluster.local:4317
       tls:
@@ -75,7 +78,7 @@ config:
         exporters: [prometheus]
       logs:
         receivers: [otlp]
-        processors: [memory_limiter, batch]
+        processors: [memory_limiter, batch, resource]
         exporters: [loki]
       traces:
         receivers: [otlp]
