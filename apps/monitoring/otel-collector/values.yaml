@@ -35,6 +35,8 @@ ports:
 
 config:
   receivers:
+    filelog:
+      start_at: beginning
     otlp:
       protocols:
         grpc:
@@ -117,6 +119,7 @@ podAnnotations:
   prometheus.io/path: "/metrics"
 
 service:
+  enabled: true
   type: ClusterIP
 
 resources:
