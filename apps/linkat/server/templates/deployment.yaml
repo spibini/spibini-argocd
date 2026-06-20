@@ -27,8 +27,13 @@ spec:
         {{- end }}
         {{- if .Values.pyroscope.enabled }}
         - name: pyroscope-agent-init
-          image: grafana/pyroscope-java:latest
-          command: ["cp", "/pyroscope.jar", "/pyroscope/pyroscope.jar"]
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+              curl -L https://github.com/grafana/pyroscope-java/releases/latest/download/pyroscope.jar \
+                -o /pyroscope/pyroscope.jar
           volumeMounts:
             - name: pyroscope-agent
               mountPath: /pyroscope
@@ -48,12 +53,7 @@ spec:
               value: Asia/Seoul
             {{- if .Values.otel.enabled }}
             - name: JAVA_TOOL_OPTIONS
-              value: >-
-                -javaagent:/otel/javaagent.jar
-                -Dotel.javaagent.logging={{ .Values.otel.javaAgentLogging }}
-                {{- if .Values.pyroscope.enabled }}
-                -javaagent:/pyroscope/pyroscope.jar
-                {{- end }}
+              value: "-javaagent:/otel/javaagent.jar -Dotel.javaagent.logging={{ .Values.otel.javaAgentLogging }}{{ if .Values.pyroscope.enabled }} -javaagent:/pyroscope/pyroscope.jar{{ end }}"
             - name: OTEL_SERVICE_NAME
               value: {{ .Values.otel.serviceName }}
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
