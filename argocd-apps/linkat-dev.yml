@@ -58,6 +58,7 @@ spec:
     helm:
       releaseName: linkat-dev-server
       values: |
+        appName: "linkat-dev-server"
         image:
           repository: qcov/linkat
           tag: latest

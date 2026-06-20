@@ -53,6 +53,7 @@ spec:
     helm:
       releaseName: linkat-prod-server
       values: |
+        appName: "linkat-prod-server"
         image:
           repository: qcov/linkat
           tag: v0.3.0
