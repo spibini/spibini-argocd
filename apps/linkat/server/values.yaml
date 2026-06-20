@@ -18,3 +18,8 @@ otel:
   protocol: "http/protobuf"
   tracesExporter: "otlp"
   javaAgentLogging: "application"
+
+pyroscope:
+  enabled: false
+  serverAddress: "http://pyroscope.monitoring.svc.cluster.local:4040"
+  appName: "linkat-server"

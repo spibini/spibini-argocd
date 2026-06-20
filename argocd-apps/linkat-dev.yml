@@ -74,6 +74,10 @@ spec:
           protocol: "http/protobuf"
           tracesExporter: "otlp"
           javaAgentLogging: "application"
+        pyroscope:
+          enabled: true
+          serverAddress: "http://pyroscope.monitoring.svc.cluster.local:4040"
+          appName: "linkat-dev-server"
   destination:
     server: "https://kubernetes.default.svc"
     namespace: linkat-dev

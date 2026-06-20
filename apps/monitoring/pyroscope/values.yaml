@@ -1,0 +1,26 @@
+pyroscope:
+  components:
+    all:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+
+  storage:
+    backend: filesystem
+
+  persistence:
+    enabled: true
+    size: 5Gi
+
+  extraArgs:
+    - -auth.multitenancy-enabled=false
+
+grafana:
+  enabled: false
+
+alloy:
+  enabled: false
