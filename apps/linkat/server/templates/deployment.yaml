@@ -15,7 +15,7 @@ spec:
       labels:
         app: linkat-dev-server
       annotations:
-        instrumentation.opentelemetry.io/inject-java: "true"
+        instrumentation.opentelemetry.io/inject-java: "opentelemetry-operator-system/linkat-instrumentation"
     spec:
       containers:
         - name: linkat-dev-server
