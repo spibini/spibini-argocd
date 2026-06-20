@@ -58,6 +58,14 @@ datasources:
             spanEndTimeShift: "1h"
             filterByTraceID: true
             filterBySpanID: false
+          tracesToProfiles:
+            datasourceUid: grafana-pyroscope-datasource
+            tags:
+              - key: service.name
+                value: service.name
+            profileTypeId: process_cpu:cpu:nanoseconds:cpu:nanoseconds
+            spanStartTimeShift: "-1m"
+            spanEndTimeShift: "1m"
           serviceMap:
             datasourceUid: prometheus
           search:
@@ -66,6 +74,12 @@ datasources:
             enabled: true
           lokiSearch:
             datasourceUid: loki
+
+      - name: Pyroscope
+        type: grafana-pyroscope-datasource
+        uid: grafana-pyroscope-datasource
+        url: http://pyroscope.monitoring.svc.cluster.local:4040
+        access: proxy
 
 dashboardProviders:
   dashboardproviders.yaml:
@@ -102,10 +116,11 @@ dashboards:
 plugins:
   - grafana-clock-panel
   - grafana-piechart-panel
+  - grafana-pyroscope-app
 
 env:
   GF_EXPLORE_ENABLED: "true"
-  GF_FEATURE_TOGGLES_ENABLE: "traceToMetrics"
+  GF_FEATURE_TOGGLES_ENABLE: "traceToMetrics traceToProfiles"
 
 grafana.ini:
   server:
