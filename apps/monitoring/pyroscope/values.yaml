@@ -1,20 +1,24 @@
 pyroscope:
-  components:
-    all:
-      resources:
-        requests:
-          cpu: 100m
-          memory: 256Mi
-        limits:
-          cpu: 500m
-          memory: 512Mi
+  replicaCount: 1
 
-  storage:
-    backend: filesystem
+  image:
+    repository: grafana/pyroscope
+    tag: "2.1.0"
 
-  persistence:
-    enabled: true
-    size: 5Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  extraArgs:
+    storage.filesystem.dir: /data
+
+persistence:
+  enabled: true
+  size: 5Gi
 
 grafana:
   enabled: false
