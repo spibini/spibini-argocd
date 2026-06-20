@@ -14,31 +14,9 @@ spec:
     metadata:
       labels:
         app: linkat-dev-server
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "true"
     spec:
-      {{- if or .Values.otel.enabled .Values.pyroscope.enabled }}
-      initContainers:
-        {{- if .Values.otel.enabled }}
-        - name: otel-agent-init
-          image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java:latest
-          command: ["cp", "/javaagent.jar", "/otel/javaagent.jar"]
-          volumeMounts:
-            - name: otel-agent
-              mountPath: /otel
-        {{- end }}
-        {{- if .Values.pyroscope.enabled }}
-        - name: pyroscope-agent-init
-          image: curlimages/curl:latest
-          command:
-            - sh
-            - -c
-            - |
-              curl -L https://github.com/grafana/pyroscope-java/releases/latest/download/pyroscope.jar \
-                -o /pyroscope/pyroscope.jar
-          volumeMounts:
-            - name: pyroscope-agent
-              mountPath: /pyroscope
-        {{- end }}
-      {{- end }}
       containers:
         - name: linkat-dev-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -51,45 +29,8 @@ spec:
           env:
             - name: TZ
               value: Asia/Seoul
-            {{- if .Values.otel.enabled }}
-            - name: JAVA_TOOL_OPTIONS
-              value: "-javaagent:/otel/javaagent.jar -Dotel.javaagent.logging={{ .Values.otel.javaAgentLogging }}{{ if .Values.pyroscope.enabled }} -javaagent:/pyroscope/pyroscope.jar{{ end }}"
             - name: OTEL_SERVICE_NAME
               value: {{ .Values.otel.serviceName }}
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: {{ .Values.otel.endpoint }}
-            - name: OTEL_EXPORTER_OTLP_PROTOCOL
-              value: {{ .Values.otel.protocol }}
-            - name: OTEL_TRACES_EXPORTER
-              value: {{ .Values.otel.tracesExporter }}
-            - name: OTEL_METRICS_EXPORTER
-              value: "otlp"
-            - name: OTEL_LOGS_EXPORTER
-              value: "otlp"
-            - name: OTEL_INSTRUMENTATION_LOGBACK_APPENDER_EXPERIMENTAL_CAPTURE_LOGGER_CONTEXT_ATTRIBUTES
-              value: "true"
-            - name: OTEL_INSTRUMENTATION_LOGBACK_APPENDER_EXPERIMENTAL_CAPTURE_CODE_ATTRIBUTES
-              value: "true"
-            {{- end }}
-            {{- if .Values.pyroscope.enabled }}
-            - name: PYROSCOPE_SERVER_ADDRESS
-              value: {{ .Values.pyroscope.serverAddress }}
-            - name: PYROSCOPE_APPLICATION_NAME
-              value: {{ .Values.pyroscope.appName }}
-            - name: PYROSCOPE_FORMAT
-              value: "jfr"
-            - name: PYROSCOPE_PROFILER_EVENT
-              value: "cpu"
-            {{- end }}
-          volumeMounts:
-            {{- if .Values.otel.enabled }}
-            - name: otel-agent
-              mountPath: /otel
-            {{- end }}
-            {{- if .Values.pyroscope.enabled }}
-            - name: pyroscope-agent
-              mountPath: /pyroscope
-            {{- end }}
           readinessProbe:
             httpGet:
               path: /actuator/health
@@ -103,12 +44,3 @@ spec:
               port: 8080
             initialDelaySeconds: 60
             periodSeconds: 30
-      volumes:
-        {{- if .Values.otel.enabled }}
-        - name: otel-agent
-          emptyDir: {}
-        {{- end }}
-        {{- if .Values.pyroscope.enabled }}
-        - name: pyroscope-agent
-          emptyDir: {}
-        {{- end }}

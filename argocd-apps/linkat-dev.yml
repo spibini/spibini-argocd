@@ -68,16 +68,7 @@ spec:
           nodePort: 30090
         secretName: linkat-dev-env
         otel:
-          enabled: true
-          endpoint: "http://otel-collector-opentelemetry-collector.monitoring.svc.cluster.local:4318"
           serviceName: "linkat-dev-server"
-          protocol: "http/protobuf"
-          tracesExporter: "otlp"
-          javaAgentLogging: "application"
-        pyroscope:
-          enabled: true
-          serverAddress: "http://pyroscope.monitoring.svc.cluster.local:4040"
-          appName: "linkat-dev-server"
   destination:
     server: "https://kubernetes.default.svc"
     namespace: linkat-dev
