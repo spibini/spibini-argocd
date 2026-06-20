@@ -16,9 +16,6 @@ pyroscope:
     enabled: true
     size: 5Gi
 
-  extraArgs:
-    - -auth.multitenancy-enabled=false
-
 grafana:
   enabled: false
 
