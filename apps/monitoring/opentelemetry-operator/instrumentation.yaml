@@ -1,0 +1,38 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: linkat-instrumentation
+  namespace: opentelemetry-operator-system
+spec:
+  exporter:
+    endpoint: http://otel-collector-opentelemetry-collector.monitoring.svc.cluster.local:4318
+
+  propagators:
+    - tracecontext
+    - baggage
+
+  sampler:
+    type: parentbased_traceidratio
+    argument: "1"
+
+  java:
+    image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java:latest
+    env:
+      - name: OTEL_EXPORTER_OTLP_PROTOCOL
+        value: http/protobuf
+      - name: OTEL_LOGS_EXPORTER
+        value: otlp
+      - name: OTEL_METRICS_EXPORTER
+        value: otlp
+      - name: OTEL_TRACES_EXPORTER
+        value: otlp
+      - name: OTEL_INSTRUMENTATION_LOGBACK_APPENDER_EXPERIMENTAL_CAPTURE_LOGGER_CONTEXT_ATTRIBUTES
+        value: "true"
+      - name: OTEL_INSTRUMENTATION_LOGBACK_APPENDER_EXPERIMENTAL_CAPTURE_CODE_ATTRIBUTES
+        value: "true"
+      - name: PYROSCOPE_SERVER_ADDRESS
+        value: http://pyroscope.monitoring.svc.cluster.local:4040
+      - name: PYROSCOPE_FORMAT
+        value: jfr
+      - name: PYROSCOPE_PROFILER_EVENT
+        value: cpu

@@ -7,13 +7,6 @@ metadata:
     app.kubernetes.io/part-of: monitoring
 spec:
   project: default
-  source:
-    repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
-    chart: opentelemetry-collector
-    targetRevision: "0.110.0"
-    helm:
-      valueFiles:
-        - $values/apps/monitoring/otel-collector/values.yaml
   sources:
     - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
       chart: opentelemetry-collector
@@ -231,6 +224,32 @@ spec:
     - repoURL: https://github.com/spibini/spibini-argocd.git
       targetRevision: HEAD
       ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: opentelemetry-operator-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: otel-instrumentation
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: monitoring
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/spibini/spibini-argocd.git
+    targetRevision: HEAD
+    path: apps/monitoring/opentelemetry-operator
+    directory:
+      include: "instrumentation.yaml"
   destination:
     server: https://kubernetes.default.svc
     namespace: opentelemetry-operator-system
