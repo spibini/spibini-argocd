@@ -28,12 +28,12 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: oci://registry-1.docker.io/bitnamicharts
+    - repoURL: https://charts.bitnami.com/bitnami
       chart: minio
       targetRevision: "17.0.21"
       helm:
         valueFiles:
-          - $values/apps/infra/minio/values.yaml 
+          - $values/apps/infra/minio/values.yaml
     - repoURL: https://github.com/spibini/spibini-argocd.git
       targetRevision: HEAD
       ref: values
