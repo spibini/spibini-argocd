@@ -1,8 +1,18 @@
-auth:
-  rootUser: "minio-admin"
-  rootPassword: "changeme-strong-password"
+image:
+  repository: quay.io/minio/minio
+  tag: RELEASE.2025-07-23T15-54-02Z
+  pullPolicy: IfNotPresent
+
+mcImage:
+  repository: quay.io/minio/mc
+  tag: RELEASE.2025-07-21T05-28-28Z
+  pullPolicy: IfNotPresent
+
+rootUser: "minio-admin"
+rootPassword: "changeme-strong-password"
 
 mode: standalone
+replicas: 1
 
 resources:
   requests:
@@ -19,22 +29,20 @@ persistence:
 
 service:
   type: ClusterIP
-  ports:
-    api: 9000
+  port: 9000
 
-console:
-  service:
-    type: NodePort
-    ports:
-      http: 9001
-    nodePorts:
-      http: "30900"
+consoleService:
+  type: NodePort
+  port: 9001
+  nodePort: 30900
 
-provisioning:
-  enabled: true
-  buckets:
-    - name: linkat-images
-    - name: linkat-screenshots
+buckets:
+  - name: linkat-images
+    policy: none
+    purge: false
+  - name: linkat-screenshots
+    policy: none
+    purge: false
 
 metrics:
   serviceMonitor:

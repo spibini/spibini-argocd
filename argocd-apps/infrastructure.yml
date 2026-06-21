@@ -28,9 +28,9 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://charts.bitnami.com/bitnami
+    - repoURL: https://charts.min.io
       chart: minio
-      targetRevision: "17.0.21"
+      targetRevision: "5.4.0"
       helm:
         valueFiles:
           - $values/apps/infra/minio/values.yaml
