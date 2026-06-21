@@ -1,11 +1,11 @@
 image:
   repository: quay.io/minio/minio
-  tag: RELEASE.2025-07-23T15-54-02Z
+  tag: RELEASE.2024-12-18T13-15-44Z
   pullPolicy: IfNotPresent
 
 mcImage:
   repository: quay.io/minio/mc
-  tag: RELEASE.2025-07-21T05-28-28Z
+  tag: RELEASE.2024-11-21T17-21-54Z
   pullPolicy: IfNotPresent
 
 rootUser: "minio-admin"
