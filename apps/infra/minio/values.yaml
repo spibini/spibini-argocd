@@ -1,0 +1,41 @@
+auth:
+  rootUser: "minio-admin"
+  rootPassword: "changeme-strong-password"
+
+mode: standalone
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+persistence:
+  enabled: true
+  storageClass: local-path
+  size: 20Gi
+
+service:
+  type: ClusterIP
+  ports:
+    api: 9000
+
+console:
+  service:
+    type: NodePort
+    ports:
+      http: 9001
+    nodePorts:
+      http: "30900"
+
+provisioning:
+  enabled: true
+  buckets:
+    - name: linkat-images
+    - name: linkat-screenshots
+
+metrics:
+  serviceMonitor:
+    enabled: false
