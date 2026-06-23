@@ -9,7 +9,7 @@ securityContext:
 
 presets:
   logsCollection:
-    enabled: true
+    enabled: false
     includeCollectorLogs: false
   kubernetesAttributes:
     enabled: true
