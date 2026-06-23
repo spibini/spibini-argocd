@@ -61,8 +61,6 @@ datasources:
             tags:
               - key: service.name
                 value: service_name
-              - key: service.namespace
-                value: service_namespace
             customQuery: false
           tracesToProfiles:
             datasourceUid: grafana-pyroscope-datasource
