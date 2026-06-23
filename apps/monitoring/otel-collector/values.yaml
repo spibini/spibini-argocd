@@ -137,7 +137,7 @@ config:
         processors: [k8sattributes, memory_limiter, batch]
         exporters: [prometheus]
       logs:
-        receivers: [otlp]
+        receivers: [filelog]
         processors: [memory_limiter, k8sattributes, resource, batch]
         exporters: [otlphttp/loki]
       traces:
