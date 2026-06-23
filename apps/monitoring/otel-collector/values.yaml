@@ -38,10 +38,16 @@ extraVolumes:
     hostPath:
       path: /var/lib/otelcol/filelogreceiver
       type: DirectoryOrCreate
+  - name: varlogpods
+    hostPath:
+      path: /var/log/pods
 
 extraVolumeMounts:
   - name: filelogreceiver-storage
     mountPath: /var/lib/otelcol/filelogreceiver
+  - name: varlogpods
+    mountPath: /var/log/pods
+    readOnly: true
 
 config:
   extensions:
